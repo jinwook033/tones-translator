@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro KR", "Apple SD Gothic Neo", "Pretendard", system-ui,
+    "Helvetica Neue", "Segoe UI", "Noto Sans KR", sans-serif;
+}
+
+body {
+  font-family: var(--font-apple);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.022em;
+  background-color: #0D0D0D;
+}
+
+/* Apple-style selection */
+::selection {
+  background: rgba(216, 242, 19, 0.3);
+}
+
+/* Apple-style scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 가로 스크롤 네비게이션 스크롤바 숨기기 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
