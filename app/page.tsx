@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { Dashboard } from "./_screens/Dashboard";
 
 export default function Home() {
-  redirect("/translator");
+  return <Dashboard />;
 }

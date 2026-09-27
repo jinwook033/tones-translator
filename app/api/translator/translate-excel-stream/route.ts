@@ -6,6 +6,8 @@ import { getGlossary } from "@/lib/translator/glossary-data";
 import { parseTonesExcel, writeTranslatedExcel, prepareTranslatedRows } from "@/lib/translator/excel-parser";
 import type { TargetLang, TranslationContext } from "@/lib/translator/types";
 import { getTenantId } from "@/lib/tenant";
+import { calculateCost, emptyUsage, addUsage } from "@/lib/translator/pricing";
+import { checkAuth } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -14,11 +16,14 @@ const TargetsSchema = z
   .string()
   .min(1)
   .transform((s) => s.split(",").map((t) => t.trim()))
-  .pipe(z.array(z.enum(["en", "cn", "sg", "ja"])).min(1).max(4));
+  .pipe(z.array(z.enum(["en", "cn", "tw", "ja"])).min(1).max(4));
 
 export async function POST(req: NextRequest) {
   let tenantId: number;
   try {
+    const denied = checkAuth(req);
+    if (denied) return denied;
+
     tenantId = getTenantId(req);
   } catch {
     return new Response(JSON.stringify({ error: "인증 필요" }), { status: 401 });
@@ -131,8 +136,7 @@ export async function POST(req: NextRequest) {
         const translationMap = new Map<string, Partial<Record<TargetLang, string>>>();
         const entries = Array.from(uniqueTexts.entries());
         let completed = 0;
-        let totalInputTokens = 0;
-        let totalOutputTokens = 0;
+        let usageTotal = emptyUsage();
 
         for (let i = 0; i < entries.length; i += 4) {
           const chunk = entries.slice(i, i + 4);
@@ -146,17 +150,20 @@ export async function POST(req: NextRequest) {
           );
           for (const { key, mapped, usage } of results) {
             translationMap.set(key, mapped);
-            totalInputTokens += usage?.inputTokens || 0;
-            totalOutputTokens += usage?.outputTokens || 0;
+            usageTotal = addUsage(usageTotal, usage);
           }
           completed += chunk.length;
-          // 모델별 비용 계산
-          const isOpus = !modelId || modelId.includes("opus");
-          const inputPrice = isOpus ? 15 : 3;
-          const outputPrice = isOpus ? 75 : 15;
-          const cost = (totalInputTokens / 1_000_000) * inputPrice + (totalOutputTokens / 1_000_000) * outputPrice;
+          // 캐시 토큰까지 포함해 계산한다 — pricing.ts 주석 참고.
+          const cost = calculateCost(usageTotal, modelId);
           send({ type: "progress", current: completed, total, message: `${completed}/${total} 번역 완료`,
-            tokens: { input: totalInputTokens, output: totalOutputTokens, cost: Math.round(cost * 1000) / 1000 } });
+            tokens: {
+              input: usageTotal.inputTokens,
+              cacheWrite: usageTotal.cacheWriteTokens,
+              cacheRead: usageTotal.cacheReadTokens,
+              output: usageTotal.outputTokens,
+              cost: Math.round(cost.totalUSD * 10000) / 10000,
+              costKRW: Math.round(cost.totalKRW),
+            } });
         }
 
         // 행별 매핑

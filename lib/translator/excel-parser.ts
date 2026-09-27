@@ -201,22 +201,22 @@ export function writeTranslatedExcel(
 
   // 중분류 헤더 번역
   const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
-    '[보톡스/윤곽주사/지방분해 데옥시콜산]': { en: '[Botox / Contour / Fat Dissolving Deoxycholic]', cn: '[肉毒素/轮廓针/溶脂]', sg: '[肉毒素/輪廓針/溶脂]', ja: '[ボトックス/輪郭注射/脂肪溶解]' },
-    '[필러/실리프팅]': { en: '[Filler / Thread Lift]', cn: '[玻尿酸/线雕]', sg: '[玻尿酸/線雕]', ja: '[フィラー/糸リフト]' },
-    '[리프팅]': { en: '[Lifting]', cn: '[提升]', sg: '[提升]', ja: '[リフティング]' },
-    '[피부 관리/스킨부스터]': { en: '[Skincare / Skin Booster]', cn: '[皮肤管理/水光针]', sg: '[皮膚管理/水光針]', ja: '[スキンケア/スキンブースター]' },
-    '[레이저]': { en: '[Laser]', cn: '[激光]', sg: '[激光]', ja: '[レーザー]' },
-    '[톤즈 시그니처]': { en: "[Tone's SIGNATURE]", cn: "[Tone's SIGNATURE]", sg: "[Tone's SIGNATURE]", ja: "[Tone's SIGNATURE]" },
-    '[제모]': { en: '[Hair Removal]', cn: '[脱毛]', sg: '[脫毛]', ja: '[脱毛]' },
-    '[바디]': { en: '[Body]', cn: '[身体]', sg: '[身體]', ja: '[ボディ]' },
-    '[수액/주사]': { en: '[IV Drip / Injection]', cn: '[输液/注射]', sg: '[輸液/注射]', ja: '[点滴/注射]' },
-    '[다이어트]': { en: '[Body Slimming]', cn: '[瘦身]', sg: '[瘦身]', ja: '[ダイエット]' },
-    '[점/문신제거]': { en: '[Mole / Tattoo Removal]', cn: '[祛痣/洗纹身]', sg: '[祛痣/洗紋身]', ja: '[ほくろ/タトゥー除去]' },
-    '[모공/여드름/흉터]': { en: '[Pore / Acne / Scar]', cn: '[毛孔/痤疮/疤痕]', sg: '[毛孔/痤瘡/疤痕]', ja: '[毛穴/ニキビ/瘢痕]' },
-    '[콜라겐 필러]': { en: '[Collagen Filler]', cn: '[胶原蛋白填充]', sg: '[膠原蛋白填充]', ja: '[コラーゲンフィラー]' },
-    '[스킨부스터]': { en: '[Skin Booster]', cn: '[水光针]', sg: '[水光針]', ja: '[スキンブースター]' },
-    '[다이어트/제모/건강주사]': { en: '[Body Slimming / Hair Removal / Health Injection]', cn: '[瘦身/脱毛/健康注射]', sg: '[瘦身/脫毛/健康注射]', ja: '[ダイエット/脱毛/健康注射]' },
-    '[쥬베룩 아이 집중케어]': { en: '[Juvelook Eye Intensive Care]', cn: '[Juvelook 眼部集中护理]', sg: '[Juvelook 眼部集中護理]', ja: '[ジュベルック アイ 集中ケア]' },
+    '[보톡스/윤곽주사/지방분해 데옥시콜산]': { en: '[Botox / Contour / Fat Dissolving Deoxycholic]', cn: '[肉毒素/轮廓针/溶脂]', tw: '[肉毒素/輪廓針/溶脂]', ja: '[ボトックス/輪郭注射/脂肪溶解]' },
+    '[필러/실리프팅]': { en: '[Filler / Thread Lift]', cn: '[玻尿酸/线雕]', tw: '[玻尿酸/線雕]', ja: '[フィラー/糸リフト]' },
+    '[리프팅]': { en: '[Lifting]', cn: '[提升]', tw: '[提升]', ja: '[リフティング]' },
+    '[피부 관리/스킨부스터]': { en: '[Skincare / Skin Booster]', cn: '[皮肤管理/水光针]', tw: '[皮膚管理/水光針]', ja: '[スキンケア/スキンブースター]' },
+    '[레이저]': { en: '[Laser]', cn: '[激光]', tw: '[激光]', ja: '[レーザー]' },
+    '[톤즈 시그니처]': { en: "[Tone's SIGNATURE]", cn: "[Tone's SIGNATURE]", tw: "[Tone's SIGNATURE]", ja: "[Tone's SIGNATURE]" },
+    '[제모]': { en: '[Hair Removal]', cn: '[脱毛]', tw: '[脫毛]', ja: '[脱毛]' },
+    '[바디]': { en: '[Body]', cn: '[身体]', tw: '[身體]', ja: '[ボディ]' },
+    '[수액/주사]': { en: '[IV Drip / Injection]', cn: '[输液/注射]', tw: '[輸液/注射]', ja: '[点滴/注射]' },
+    '[다이어트]': { en: '[Body Slimming]', cn: '[瘦身]', tw: '[瘦身]', ja: '[ダイエット]' },
+    '[점/문신제거]': { en: '[Mole / Tattoo Removal]', cn: '[祛痣/洗纹身]', tw: '[祛痣/洗紋身]', ja: '[ほくろ/タトゥー除去]' },
+    '[모공/여드름/흉터]': { en: '[Pore / Acne / Scar]', cn: '[毛孔/痤疮/疤痕]', tw: '[毛孔/痤瘡/疤痕]', ja: '[毛穴/ニキビ/瘢痕]' },
+    '[콜라겐 필러]': { en: '[Collagen Filler]', cn: '[胶原蛋白填充]', tw: '[膠原蛋白填充]', ja: '[コラーゲンフィラー]' },
+    '[스킨부스터]': { en: '[Skin Booster]', cn: '[水光针]', tw: '[水光針]', ja: '[スキンブースター]' },
+    '[다이어트/제모/건강주사]': { en: '[Body Slimming / Hair Removal / Health Injection]', cn: '[瘦身/脱毛/健康注射]', tw: '[瘦身/脫毛/健康注射]', ja: '[ダイエット/脱毛/健康注射]' },
+    '[쥬베룩 아이 집중케어]': { en: '[Juvelook Eye Intensive Care]', cn: '[Juvelook 眼部集中护理]', tw: '[Juvelook 眼部集中護理]', ja: '[ジュベルック アイ 集中ケア]' },
   };
 
   const range = XLSX.utils.decode_range(ws['!ref'] ?? 'A1:M1');

@@ -8,7 +8,7 @@
  * Body:
  *   korean              — the original Korean text
  *   selectedTranslation — the translation the user picked
- *   targetLang          — which language ("en" | "cn" | "sg" | "ja")
+ *   targetLang          — which language ("en" | "cn" | "tw" | "ja")
  *   addToGlossary       — whether to persist the choice in the glossary
  */
 
@@ -17,6 +17,7 @@ import { z } from 'zod';
 import { addGlossaryEntry } from '@/lib/translator/glossary-data';
 import type { GlossaryEntry } from '@/lib/translator/types';
 import { getTenantId } from '@/lib/tenant';
+import { checkAuth } from "@/lib/auth";
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -24,12 +25,15 @@ export const maxDuration = 120;
 const ResolveSchema = z.object({
   korean: z.string().min(1).max(200),
   selectedTranslation: z.string().min(1).max(2000),
-  targetLang: z.enum(['en', 'cn', 'sg', 'ja']),
+  targetLang: z.enum(['en', 'cn', 'tw', 'ja']),
   addToGlossary: z.boolean().default(false),
 });
 
 export async function POST(req: NextRequest) {
   try {
+    const denied = checkAuth(req);
+    if (denied) return denied;
+
     const tenantId = getTenantId(req);
     const body = await req.json();
     const parsed = ResolveSchema.safeParse(body);
@@ -48,10 +52,10 @@ export async function POST(req: NextRequest) {
       // Other languages remain null so they don't override existing translations.
       const entry: GlossaryEntry = {
         korean,
-        category: 'medical', // default; user can reclassify later
+        category: 'general', // default; user can reclassify later
         en: targetLang === 'en' ? selectedTranslation : null,
         cn: targetLang === 'cn' ? selectedTranslation : null,
-        sg: targetLang === 'sg' ? selectedTranslation : null,
+        tw: targetLang === 'tw' ? selectedTranslation : null,
         ja: targetLang === 'ja' ? selectedTranslation : null,
         note: `Auto-resolved from ambiguity (${targetLang})`,
         locked: false,

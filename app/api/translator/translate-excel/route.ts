@@ -17,6 +17,7 @@ import { getGlossary } from '@/lib/translator/glossary-data';
 import { parseTonesExcel, writeTranslatedExcel, prepareTranslatedRows } from '@/lib/translator/excel-parser';
 import type { TargetLang, TranslationContext } from '@/lib/translator/types';
 import { getTenantId } from '@/lib/tenant';
+import { checkAuth } from "@/lib/auth";
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -25,10 +26,13 @@ const TargetsSchema = z
   .string()
   .min(1)
   .transform((s) => s.split(',').map((t) => t.trim()))
-  .pipe(z.array(z.enum(['en', 'cn', 'sg', 'ja'])).min(1).max(4));
+  .pipe(z.array(z.enum(['en', 'cn', 'tw', 'ja'])).min(1).max(4));
 
 export async function POST(req: NextRequest) {
   try {
+    const denied = checkAuth(req);
+    if (denied) return denied;
+
     const tenantId = getTenantId(req);
     const formData = await req.formData();
 
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
     const rawTargets = formData.get('targets');
     if (!rawTargets || typeof rawTargets !== 'string') {
       return NextResponse.json(
-        { error: 'Missing targets field (comma-separated: en,cn,sg,ja)' },
+        { error: 'Missing targets field (comma-separated: en,cn,tw,ja)' },
         { status: 400 },
       );
     }

@@ -54,24 +54,24 @@ const RULES: Partial<Record<TargetLang, AntiPatternRule[]>> = {
     { pattern: /德玛V|德瑪V/, code: 'CN_DERMAV', message: '"德玛V" (phonetic) for 더마브이', suggestion: 'DermaV', severity: 'block' },
     { pattern: /音调/, code: 'CN_MUSICAL_TONE', message: '"音调" (musical tone) for 토닝', suggestion: '净肤', severity: 'block' },
   ],
-  sg: [
-    { pattern: /議員|议员/, code: 'SG_POLITICIAN', message: '"議員/议员" for 의원', suggestion: '診所', severity: 'block' },
-    { pattern: /舉重|举重/, code: 'SG_WEIGHTLIFTING', message: '"舉重" for 리프팅', suggestion: '拉提/緊緻拉提', severity: 'block' },
-    { pattern: /手術/, code: 'SG_SURGERY', message: '"手術" (surgery) for 시술', suggestion: '療程', severity: 'warning' },
-    { pattern: /元帳/, code: 'SG_LEDGER', message: '"元帳" for 원장', suggestion: '院長', severity: 'block' },
-    { pattern: /移動線/, code: 'SG_MOVING_LINE', message: '"移動線" for 이동선', suggestion: 'Approved transliteration', severity: 'block' },
-    { pattern: /日產|日产/, code: 'SG_NISSAN', message: '"日產/日产" (Nissan) for 일산', suggestion: '一山', severity: 'block' },
-    { pattern: /Juvéderm|Juvederm/, code: 'SG_COMPETITOR', message: 'Competitor brand for 쥬베룩', suggestion: 'Juvelook', severity: 'block' },
-    { pattern: /純毒素/, code: 'SG_PURE_TOXIN', message: '"純毒素" for 코어톡스', suggestion: 'Coretox', severity: 'block' },
-    { pattern: /通斯/, code: 'SG_TONGSI', message: '"通斯" for 톤즈', suggestion: "Tone's", severity: 'block' },
-    { pattern: /修復針/, code: 'SG_HEALER_WRONG', message: '"修復針" for 리쥬란 힐러', suggestion: 'Rejuran Healer', severity: 'block' },
-    { pattern: /三選一/, code: 'SG_THREE_CHOOSE', message: '"三選一" — wrong number assumption', suggestion: '任選1', severity: 'warning' },
-    { pattern: /LHA\s+LALA\s+Peel/i, code: 'SG_LALA_PEEL', message: '"LHA LALA Peel" for 라라필', suggestion: 'LHALA Peel', severity: 'block' },
-    { pattern: /水毒素/, code: 'SG_WATER_TOXIN', message: '"水毒素" for 물톡스', suggestion: '水光注射', severity: 'block' },
-    { pattern: /洗牙/, code: 'SG_DENTAL', message: '"洗牙" (dental) for 스케일링', suggestion: '去角質', severity: 'block' },
-    { pattern: /再生創世紀/, code: 'SG_GENESIS', message: '"再生創世紀" for 헬제네시스', suggestion: 'Laser Genesis', severity: 'block' },
-    { pattern: /德瑪V|德玛V/, code: 'SG_DERMAV', message: '"德瑪V" for 더마브이', suggestion: 'DermaV', severity: 'block' },
-    { pattern: /音調/, code: 'SG_MUSICAL_TONE', message: '"音調" (musical tone) for 토닝', suggestion: '淨膚', severity: 'block' },
+  tw: [
+    { pattern: /議員|议员/, code: 'TW_POLITICIAN', message: '"議員/议员" for 의원', suggestion: '診所', severity: 'block' },
+    { pattern: /舉重|举重/, code: 'TW_WEIGHTLIFTING', message: '"舉重" for 리프팅', suggestion: '拉提/緊緻拉提', severity: 'block' },
+    { pattern: /手術/, code: 'TW_SURGERY', message: '"手術" (surgery) for 시술', suggestion: '療程', severity: 'warning' },
+    { pattern: /元帳/, code: 'TW_LEDGER', message: '"元帳" for 원장', suggestion: '院長', severity: 'block' },
+    { pattern: /移動線/, code: 'TW_MOVING_LINE', message: '"移動線" for 이동선', suggestion: 'Approved transliteration', severity: 'block' },
+    { pattern: /日產|日产/, code: 'TW_NISSAN', message: '"日產/日产" (Nissan) for 일산', suggestion: '一山', severity: 'block' },
+    { pattern: /Juvéderm|Juvederm/, code: 'TW_COMPETITOR', message: 'Competitor brand for 쥬베룩', suggestion: 'Juvelook', severity: 'block' },
+    { pattern: /純毒素/, code: 'TW_PURE_TOXIN', message: '"純毒素" for 코어톡스', suggestion: 'Coretox', severity: 'block' },
+    { pattern: /通斯/, code: 'TW_TONGSI', message: '"通斯" for 톤즈', suggestion: "Tone's", severity: 'block' },
+    { pattern: /修復針/, code: 'TW_HEALER_WRONG', message: '"修復針" for 리쥬란 힐러', suggestion: 'Rejuran Healer', severity: 'block' },
+    { pattern: /三選一/, code: 'TW_THREE_CHOOSE', message: '"三選一" — wrong number assumption', suggestion: '任選1', severity: 'warning' },
+    { pattern: /LHA\s+LALA\s+Peel/i, code: 'TW_LALA_PEEL', message: '"LHA LALA Peel" for 라라필', suggestion: 'LHALA Peel', severity: 'block' },
+    { pattern: /水毒素/, code: 'TW_WATER_TOXIN', message: '"水毒素" for 물톡스', suggestion: '水光注射', severity: 'block' },
+    { pattern: /洗牙/, code: 'TW_DENTAL', message: '"洗牙" (dental) for 스케일링', suggestion: '去角質', severity: 'block' },
+    { pattern: /再生創世紀/, code: 'TW_GENESIS', message: '"再生創世紀" for 헬제네시스', suggestion: 'Laser Genesis', severity: 'block' },
+    { pattern: /德瑪V|德玛V/, code: 'TW_DERMAV', message: '"德瑪V" for 더마브이', suggestion: 'DermaV', severity: 'block' },
+    { pattern: /音調/, code: 'TW_MUSICAL_TONE', message: '"音調" (musical tone) for 토닝', suggestion: '淨膚', severity: 'block' },
   ],
   ja: [
     { pattern: /議員/, code: 'JA_POLITICIAN', message: '"議員" (politician) for 의원', suggestion: '医院/クリニック', severity: 'block' },
@@ -112,12 +112,12 @@ function checkScript(text: string, target: TargetLang): ValidationIssue[] {
     }
   }
 
-  if (target === 'sg') {
+  if (target === 'tw') {
     const match = text.match(SIMPLIFIED_CHARS);
     if (match) {
       issues.push({
         severity: 'warning',
-        code: 'SG_SIMP_CHAR',
+        code: 'TW_SIMP_CHAR',
         message: `Simplified Chinese character "${match[0]}" found in 繁體 output`,
         found: match[0],
         suggestion: 'Convert to traditional equivalent',
@@ -215,4 +215,43 @@ export function validateTranslation(
     passed: !hasBlocking,
     issues,
   };
+}
+
+// ---------------------------------------------------------------------------
+// 규칙 집계 — 대시보드에서 보여준다.
+//
+// 시안에는 「차단 22 / 경고 38」로 적혀 있었지만 실제는 그 반대다. 이 시스템은
+// 애매하면 경고가 아니라 차단을 거는 쪽으로 만들어져 있다. 화면에 비율이
+// 뒤집혀 보이면 "경고가 대부분이니 넘겨도 되겠다"고 잘못 판단하게 된다.
+// ---------------------------------------------------------------------------
+
+export interface RuleStats {
+  total: number;
+  block: number;
+  warning: number;
+  byLang: Record<string, number>;
+}
+
+/** 검증기가 들고 있는 규칙 수. 언어별 anti-pattern + 공통 검사 4종. */
+export function getRuleStats(): RuleStats {
+  const byLang: Record<string, number> = {};
+  let block = 0;
+  let warning = 0;
+
+  for (const [lang, rules] of Object.entries(RULES)) {
+    const list = rules ?? [];
+    byLang[lang] = list.length;
+    for (const r of list) {
+      if (r.severity === 'block') block++;
+      else warning++;
+    }
+  }
+
+  // 언어와 무관한 검사: 간체/번체 혼용 2, 숫자 보존 1(경고), 플레이스홀더 누락 1(차단)
+  const COMMON_WARNING = 3;
+  const COMMON_BLOCK = 1;
+  warning += COMMON_WARNING;
+  block += COMMON_BLOCK;
+
+  return { total: block + warning, block, warning, byLang };
 }

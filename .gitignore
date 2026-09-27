@@ -2,7 +2,8 @@ node_modules/
 .next/
 .env.local
 .env
-data/glossary.json
+data/
+tsconfig.tsbuildinfo
 *.log
 .DS_Store
 next-env.d.ts

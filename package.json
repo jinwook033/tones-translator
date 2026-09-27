@@ -4,13 +4,14 @@
   "private": true,
   "description": "톤즈의원 의료 원고 번역기 — 용어집 기반 한→영 번역 (blog-rank-multi 에서 분리)",
   "scripts": {
-    "dev": "next dev -p 3300",
+    "dev": "next dev -p 3300 -H 127.0.0.1",
     "build": "next build",
-    "start": "next start -p 3300",
+    "start": "next start -p 3300 -H 127.0.0.1",
     "lint": "next lint"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",
+    "@phosphor-icons/web": "^2.1.2",
     "next": "^16.2.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",

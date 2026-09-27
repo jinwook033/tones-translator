@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-7f4ab8d3-1522-46de-9fb5-f1240d5701e4/styles.css">
+<script src="_ds/nocturne-7f4ab8d3-1522-46de-9fb5-f1240d5701e4/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#0f111b; --surface:#191c28; --surface2:#141724; --raise:#20242f;
+  --line:rgba(233,233,237,.10); --line2:rgba(233,233,237,.18);
+  --txt:#e9e9ed; --muted:#9397ab; --dim:#75798c;
+  --accent:#c4f24d; --accent-ink:#15170f; --accent-soft:rgba(196,242,77,.12);
+  --ok:#57c98b; --warn:#e2a247; --bad:#e2655f;
+  --fnt:"Inter","Noto Sans KR",system-ui,sans-serif;
+  --ja:"Inter","Noto Sans JP","Noto Sans KR",sans-serif;
+  --sc:"Inter","Noto Sans SC","Noto Sans KR",sans-serif;
+  --tc:"Inter","Noto Sans TC","Noto Sans KR",sans-serif;
+}
+body{background:var(--bg);color:var(--txt);font-family:var(--fnt);margin:0;font-size:14px}
+::selection{background:rgba(196,242,77,.28)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+textarea,input,select,button{font-family:inherit}
+</style>
+</helmet>
+
+<div style="display:grid;grid-template-columns:212px minmax(0,1fr);min-height:100vh;min-width:1280px;background:var(--bg);font-family:var(--fnt);font-size:14px;color:var(--txt)">
+
+  <aside style="border-right:1px solid var(--line);background:var(--surface2);display:flex;flex-direction:column;padding:20px 0">
+    <div style="padding:0 18px 22px;display:flex;flex-direction:column;gap:3px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:7px;height:7px;border-radius:2px;background:var(--accent);display:block"></span>
+        <span style="font-weight:600;letter-spacing:-.01em;font-size:14px">Tone's 번역</span>
+      </div>
+      <span style="color:var(--dim);font-size:11px;letter-spacing:.04em">INTERNAL · v0.4</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:0 10px">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="6">
+        <button onClick="{{ item.go }}" style="display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:9px;width:100%;text-align:left;padding:8px 10px;border:0;border-radius:6px;cursor:pointer;font-size:13.5px;font-weight:500;background:{{ item.bg }};color:{{ item.fg }}" style-hover="background:var(--raise)">
+          <i class="ph {{ item.icon }}" style="font-size:16px;color:{{ item.ic }}"></i>
+          <span>{{ item.label }}</span>
+          <span style="font-size:11px;font-variant-numeric:tabular-nums;color:{{ item.badgeFg }};background:{{ item.badgeBg }};padding:1px 6px;border-radius:99px">{{ item.badge }}</span>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="margin-top:auto;padding:16px 18px 0;display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:10.5px;letter-spacing:.09em;color:var(--dim)">강조색</span>
+      <div style="display:flex;gap:6px">
+        <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+          <button onClick="{{ t.pick }}" title="{{ t.label }}" style="width:34px;height:22px;border-radius:5px;cursor:pointer;background:{{ t.swatch }};border:1px solid {{ t.border }}"></button>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;padding-top:6px;border-top:1px solid var(--line)">
+        <span style="width:22px;height:22px;border-radius:99px;background:var(--raise);display:grid;place-items:center;font-size:10px;color:var(--muted)">MK</span>
+        <span style="font-size:12px;color:var(--muted)">마케팅 · 김세영</span>
+      </div>
+    </div>
+  </aside>
+
+  <main style="min-width:0;display:flex;flex-direction:column">
+    <header style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 26px;border-bottom:1px solid var(--line);background:var(--surface2)">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <h4 style="margin:0;font-size:18px;font-weight:500;letter-spacing:-.015em">{{ title }}</h4>
+        <span style="font-size:12px;color:var(--dim)">{{ subtitle }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button onClick="{{ toggleEmpty }}" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;background:{{ emptyBg }};border:1px solid {{ emptyBorder }};color:{{ emptyFg }}">
+          <i class="ph ph-eye-slash" style="font-size:14px"></i><span>빈 상태 보기</span>
+        </button>
+        <span style="font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums">마지막 동기화 09-17 14:22</span>
+      </div>
+    </header>
+
+    <div style="padding:24px 26px 56px;display:flex;flex-direction:column;gap:22px">
+
+      <!-- 1 · 대시보드 -->
+      <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <section style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <h5 style="margin:0;font-size:14px;font-weight:600;letter-spacing:-.01em">검수 대기 현황</h5>
+              <span style="font-size:12px;color:var(--dim)">사람 손이 필요한 유일한 지점</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+              <sc-for list="{{ langCards }}" as="c" hint-placeholder-count="4">
+                <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:15px 16px;display:flex;flex-direction:column;gap:13px;box-shadow:0 1px 0 rgba(0,0,0,.3)">
+                  <div style="display:flex;align-items:center;justify-content:space-between">
+                    <span style="font-size:13.5px;font-weight:600">{{ c.name }}</span>
+                    <span style="font-size:11px;letter-spacing:.06em;color:var(--dim)">{{ c.code }}</span>
+                  </div>
+                  <div style="display:flex;align-items:flex-end;gap:5px">
+                    <span style="font-size:34px;line-height:1;font-weight:500;font-variant-numeric:tabular-nums;color:{{ c.pendColor }}">{{ c.pending }}</span>
+                    <span style="font-size:12px;color:var(--muted);padding-bottom:4px">대기</span>
+                  </div>
+                  <div style="display:flex;gap:16px;padding-top:11px;border-top:1px solid var(--line)">
+                    <div style="display:flex;flex-direction:column;gap:1px">
+                      <span style="font-size:10.5px;color:var(--dim);letter-spacing:.04em">수정됨</span>
+                      <span style="font-size:15px;font-variant-numeric:tabular-nums">{{ c.fixed }}</span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:1px">
+                      <span style="font-size:10.5px;color:var(--dim);letter-spacing:.04em">승인</span>
+                      <span style="font-size:15px;font-variant-numeric:tabular-nums;color:var(--muted)">{{ c.ok }}</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start">
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:baseline;gap:10px">
+                <h5 style="margin:0;font-size:14px;font-weight:600">바로 손봐야 할 것</h5>
+                <span style="font-size:12px;color:var(--dim)">검증기가 차단한 항목 {{ blockedCount }}건</span>
+              </div>
+              <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px dashed var(--line2);border-radius:8px;padding:44px;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--surface2)">
+                  <i class="ph ph-check-circle" style="font-size:26px;color:var(--ok)"></i>
+                  <span style="font-size:13.5px;font-weight:500">차단된 항목이 없습니다</span>
+                  <span style="font-size:12px;color:var(--dim)">검증기를 통과하지 못한 번역이 생기면 여기에 쌓입니다.</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ notEmpty }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ blocked }}" as="b" hint-placeholder-count="4">
+                    <div style="display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-left:2px solid var(--bad);border-radius:8px;padding:13px 15px" style-hover="background:var(--raise)">
+                      <div style="display:flex;flex-direction:column;gap:5px">
+                        <span style="font-size:11.5px;font-weight:600">{{ b.lang }}</span>
+                        <span style="font-size:10.5px;font-weight:600;letter-spacing:.05em;color:var(--bad);background:rgba(226,101,95,.13);padding:2px 6px;border-radius:4px;width:fit-content">차단</span>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                        <span style="font-size:13.5px">{{ b.src }}</span>
+                        <span lang="{{ b.tag }}" style="font-size:13.5px;color:var(--warn);font-family:{{ b.font }}">{{ b.mt }}</span>
+                        <span style="font-size:11.5px;color:var(--dim)"><span style="font-family:Inter,monospace;letter-spacing:.02em;color:var(--muted)">{{ b.code }}</span> · {{ b.why }}</span>
+                      </div>
+                      <button onClick="{{ b.go }}" style="padding:6px 10px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="border-color:var(--accent);color:var(--accent)">검수하기</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </section>
+
+            <section style="display:flex;flex-direction:column;gap:8px">
+              <h5 style="margin:0;font-size:14px;font-weight:600">기준 데이터</h5>
+              <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+                <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:13px 15px;display:flex;flex-direction:column;gap:7px">
+                  <span style="font-size:12px;color:var(--muted)">{{ s.label }}</span>
+                  <div style="display:flex;align-items:baseline;gap:6px">
+                    <span style="font-size:23px;line-height:1;font-weight:500;font-variant-numeric:tabular-nums">{{ s.big }}</span>
+                    <span style="font-size:12px;color:var(--dim)">{{ s.bigUnit }}</span>
+                  </div>
+                  <span style="font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums">{{ s.sub }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- 2 · 번역 -->
+      <sc-if value="{{ isTrans }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 14px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:11.5px;color:var(--dim)">대상 언어</span>
+              <div style="display:flex;gap:5px">
+                <sc-for list="{{ targets }}" as="t" hint-placeholder-count="4">
+                  <button onClick="{{ t.toggle }}" style="padding:5px 11px;border-radius:6px;font-size:12.5px;font-weight:500;cursor:pointer;background:{{ t.bg }};border:1px solid {{ t.border }};color:{{ t.fg }}">{{ t.name }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:11.5px;color:var(--dim)">문맥</span>
+              <select value="{{ ctx }}" onChange="{{ setCtx }}" style="background:var(--surface2);border:1px solid var(--line2);border-radius:6px;color:var(--txt);font-size:12.5px;padding:5px 8px">
+                <sc-for list="{{ ctxOptions }}" as="o" hint-placeholder-count="5">
+                  <option value="{{ o }}">{{ o }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <button onClick="{{ flipDir }}" style="display:flex;align-items:center;gap:7px;margin-left:auto;padding:5px 11px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">
+              <i class="ph ph-arrows-left-right" style="font-size:14px"></i><span>{{ dirLabel }}</span>
+            </button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px">
+                <span style="font-size:11.5px;letter-spacing:.05em;color:var(--dim)">한국어 원고</span>
+                <textarea value="{{ srcText }}" onChange="{{ setSrc }}" spellcheck="false" style="min-height:160px;resize:vertical;background:var(--surface2);border:1px solid var(--line2);border-radius:6px;color:var(--txt);font-size:15px;line-height:1.6;padding:11px 12px"></textarea>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:11.5px;color:var(--dim)">고정된 용어</span>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-for list="{{ pinned }}" as="p" hint-placeholder-count="3">
+                      <span style="display:flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:99px;background:var(--accent-soft);border:1px solid rgba(196,242,77,.28);color:var(--txt)"><i class="ph ph-push-pin" style="font-size:11px;color:var(--accent)"></i>{{ p }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+                <button onClick="{{ runTranslate }}" style="padding:9px;border-radius:6px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer" style-hover="background:var(--accent);color:var(--accent-ink)">번역 실행</button>
+              </div>
+            </div>
+
+            <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed var(--line2);border-radius:8px;padding:70px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--surface2)">
+                <i class="ph ph-translate" style="font-size:28px;color:var(--dim)"></i>
+                <span style="font-size:13.5px;font-weight:500">번역 결과가 아직 없습니다</span>
+                <span style="font-size:12px;color:var(--dim)">왼쪽에 원고를 넣고 번역을 실행하세요.</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ notEmpty }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+                <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+                  <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:15px;display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <span style="font-size:12.5px;font-weight:600">{{ r.name }}</span>
+                      <span style="font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:4px;background:{{ r.badgeBg }};color:{{ r.badgeFg }}">{{ r.badge }}</span>
+                    </div>
+                    <p lang="{{ r.tag }}" style="margin:0;font-size:17px;line-height:1.5;font-family:{{ r.font }};text-wrap:pretty">{{ r.text }}</p>
+                    <div style="display:flex;align-items:center;gap:9px;margin-top:auto">
+                      <div style="flex:1;height:4px;border-radius:99px;background:var(--raise);overflow:hidden">
+                        <div style="height:100%;border-radius:99px;width:{{ r.pct }};background:{{ r.barColor }}"></div>
+                      </div>
+                      <span style="font-size:12px;font-variant-numeric:tabular-nums;color:var(--muted)">{{ r.conf }}</span>
+                      <button onClick="{{ r.copy }}" title="복사" style="width:26px;height:26px;display:grid;place-items:center;border-radius:5px;border:1px solid var(--line2);background:transparent;color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><i class="ph ph-copy" style="font-size:13px"></i></button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- 3 · 엑셀 일괄 -->
+      <sc-if value="{{ isExcel }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;max-width:900px">
+          <div style="display:flex;gap:5px;background:var(--surface2);border:1px solid var(--line);border-radius:7px;padding:4px;width:fit-content">
+            <sc-for list="{{ excelStates }}" as="s" hint-placeholder-count="4">
+              <button onClick="{{ s.pick }}" style="padding:5px 12px;border-radius:5px;font-size:12.5px;font-weight:500;cursor:pointer;border:0;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="border:1px dashed var(--line2);border-radius:8px;background:var(--surface2);padding:34px;display:flex;flex-direction:column;align-items:center;gap:9px">
+            <i class="ph ph-file-xls" style="font-size:28px;color:var(--accent)"></i>
+            <span style="font-size:14px;font-weight:500">엑셀 파일을 여기에 놓으세요</span>
+            <span style="font-size:12px;color:var(--dim)">.xlsx · 첫 열에 한국어 원고, 최대 2,000행</span>
+            <button style="margin-top:4px;padding:7px 14px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:var(--accent);color:var(--accent-ink)">파일 선택</button>
+          </div>
+
+          <sc-if value="{{ excelRunning }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums">142 / 380 번역 완료</span>
+                <span style="font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">가격표_2026Q4.xlsx</span>
+              </div>
+              <div style="height:6px;border-radius:99px;background:var(--raise);overflow:hidden">
+                <div style="height:100%;width:37.4%;background:var(--accent);border-radius:99px"></div>
+              </div>
+              <div style="display:flex;gap:26px">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:10.5px;color:var(--dim);letter-spacing:.04em">누적 토큰</span><span style="font-size:15px;font-variant-numeric:tabular-nums">184,920</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:10.5px;color:var(--dim);letter-spacing:.04em">예상 비용</span><span style="font-size:15px;font-variant-numeric:tabular-nums">₩ 3,140</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:10.5px;color:var(--dim);letter-spacing:.04em">남은 시간</span><span style="font-size:15px;font-variant-numeric:tabular-nums">약 6분</span></div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ excelWarn }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface);border:1px solid rgba(226,162,71,.35);border-left:2px solid var(--warn);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <i class="ph ph-warning" style="font-size:15px;color:var(--warn)"></i>
+                <span style="font-size:13.5px;font-weight:500">용어집에 없는 단어 7개를 찾았습니다</span>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ unknownTerms }}" as="u" hint-placeholder-count="7">
+                  <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)">
+                    <span style="font-size:13.5px">{{ u.term }}</span>
+                    <span style="font-size:11.5px;color:var(--dim)">{{ u.hint }}</span>
+                    <button style="padding:4px 10px;border-radius:5px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12px;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">용어집에 저장</button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ excelDone }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:13px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <i class="ph ph-check-circle" style="font-size:15px;color:var(--ok)"></i>
+                <span style="font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums">380 / 380 번역 완료 · 검수 대기로 이동됨</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px">
+                <sc-for list="{{ downloads }}" as="d" hint-placeholder-count="4">
+                  <button style="display:flex;align-items:center;justify-content:center;gap:7px;padding:9px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><i class="ph ph-download-simple" style="font-size:14px"></i>{{ d }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ excelIdle }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:8px 2px;font-size:12px;color:var(--dim)">최근 작업 없음. 파일을 올리면 진행 상황이 여기에 표시됩니다.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- 4 · 검수 -->
+      <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:1000px">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;gap:4px;background:var(--surface2);border:1px solid var(--line);border-radius:7px;padding:4px">
+              <sc-for list="{{ reviewTabs }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.pick }}" style="display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:5px;font-size:12.5px;font-weight:500;cursor:pointer;border:0;background:{{ t.bg }};color:{{ t.fg }}">
+                  <span>{{ t.name }}</span>
+                  <span style="font-size:11px;font-variant-numeric:tabular-nums;padding:0 5px;border-radius:99px;background:{{ t.badgeBg }};color:{{ t.badgeFg }}">{{ t.count }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <select value="{{ revStatus }}" onChange="{{ setRevStatus }}" style="background:var(--surface2);border:1px solid var(--line2);border-radius:6px;color:var(--txt);font-size:12.5px;padding:6px 8px">
+              <sc-for list="{{ revStatusOptions }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o }}">{{ o }}</option>
+              </sc-for>
+            </select>
+            <button onClick="{{ toggleOnlyFlagged }}" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:6px;font-size:12.5px;font-weight:500;cursor:pointer;background:{{ flaggedBg }};border:1px solid {{ flaggedBorder }};color:{{ flaggedFg }}">
+              <i class="ph ph-funnel" style="font-size:13px"></i><span>검증기가 잡은 것만</span>
+            </button>
+            <div style="display:flex;align-items:center;gap:7px;flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px">
+              <i class="ph ph-magnifying-glass" style="font-size:13px;color:var(--dim)"></i>
+              <input value="{{ revQuery }}" onChange="{{ setRevQuery }}" placeholder="원문·번역 검색" style="flex:1;background:transparent;border:0;color:var(--txt);font-size:12.5px;outline:none">
+            </div>
+          </div>
+
+          <sc-if value="{{ reviewEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px dashed var(--line2);border-radius:8px;padding:66px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--surface2)">
+              <i class="ph ph-seal-check" style="font-size:30px;color:var(--ok)"></i>
+              <span style="font-size:14px;font-weight:500">검수할 게 없습니다</span>
+              <span style="font-size:12px;color:var(--dim)">이 언어의 대기 건을 모두 처리했습니다. 새 번역이 들어오면 여기에 쌓입니다.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ reviewHas }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <sc-for list="{{ reviewCards }}" as="c" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:3px minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden">
+                  <div style="background:{{ c.strip }}"></div>
+                  <div style="padding:14px 16px;display:flex;flex-direction:column;gap:11px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+                      <span style="font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:4px;background:{{ c.flagBg }};color:{{ c.flagFg }}">{{ c.flag }}</span>
+                      <span style="font-size:12px;color:var(--muted)">{{ c.ctx }}</span>
+                      <span style="font-size:12px;color:var(--dim)">·</span>
+                      <span style="font-size:12px;color:{{ c.statusFg }}">{{ c.status }}</span>
+                      <span style="font-size:12px;color:var(--dim)">·</span>
+                      <span style="font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">신뢰도 {{ c.conf }}</span>
+                      <span style="margin-left:auto;font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums">{{ c.id }}</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:62px minmax(0,1fr);gap:5px 12px;align-items:baseline">
+                      <span style="font-size:11.5px;color:var(--dim)">원문</span>
+                      <span style="font-size:14.5px">{{ c.src }}</span>
+                      <span style="font-size:11.5px;color:var(--dim)">모델 번역</span>
+                      <span lang="{{ c.tag }}" style="font-size:14px;color:var(--muted);font-family:{{ c.font }}">{{ c.mt }}</span>
+                    </div>
+                    <sc-if value="{{ c.hasNote }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;align-items:flex-start;gap:8px;background:rgba(226,162,71,.10);border-radius:6px;padding:8px 10px">
+                        <i class="ph ph-warning-circle" style="font-size:14px;color:var(--warn);margin-top:2px"></i>
+                        <span style="font-size:12.5px;color:var(--txt)"><span style="color:var(--muted);letter-spacing:.02em">{{ c.code }}</span> · {{ c.note }}</span>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                      <span style="font-size:11.5px;color:var(--dim)">고치기</span>
+                      <textarea lang="{{ c.tag }}" value="{{ c.edit }}" onChange="{{ c.onEdit }}" spellcheck="false" style="min-height:96px;resize:vertical;background:var(--surface2);border:1px solid {{ c.editBorder }};border-radius:6px;color:var(--txt);font-size:16px;line-height:1.6;padding:11px 12px;font-family:{{ c.font }}"></textarea>
+                    </div>
+                    <div style="display:flex;gap:7px;flex-wrap:wrap">
+                      <button onClick="{{ c.save }}" style="padding:7px 13px;border-radius:6px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:var(--accent);color:var(--accent-ink)">수정 저장</button>
+                      <button onClick="{{ c.approve }}" style="padding:7px 13px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--ok);color:var(--ok)">이대로 승인</button>
+                      <button onClick="{{ c.reset }}" style="padding:7px 13px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--muted);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--line2);color:var(--txt)">검수 취소</button>
+                      <button onClick="{{ c.toExample }}" style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:6px;border:1px dashed var(--line2);background:transparent;color:var(--muted);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><i class="ph ph-bookmark-simple" style="font-size:13px"></i>이 수정을 예문으로</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- 5 · 용어집 -->
+      <sc-if value="{{ isGloss }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:7px;width:280px;background:var(--surface2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px">
+              <i class="ph ph-magnifying-glass" style="font-size:13px;color:var(--dim)"></i>
+              <input value="{{ glossQuery }}" onChange="{{ setGlossQuery }}" placeholder="한국어 또는 번역 검색" style="flex:1;background:transparent;border:0;color:var(--txt);font-size:12.5px;outline:none">
+            </div>
+            <span style="font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums">전체 226건 · 13개 분류</span>
+            <button style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:var(--accent);color:var(--accent-ink)"><i class="ph ph-plus" style="font-size:13px"></i>용어 추가</button>
+          </div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ categories }}" as="k" hint-placeholder-count="13">
+              <button onClick="{{ k.pick }}" style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;background:{{ k.bg }};border:1px solid {{ k.border }};color:{{ k.fg }}">
+                <span style="letter-spacing:.01em">{{ k.code }}</span>
+                <span style="color:var(--muted)">{{ k.ko }}</span>
+                <span style="font-variant-numeric:tabular-nums;color:{{ k.numFg }}">{{ k.n }}</span>
+              </button>
+            </sc-for>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:150px 150px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 54px 44px;gap:10px;padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.05em;color:var(--dim)">
+              <span>한국어</span><span>분류</span><span>ENGLISH</span><span>简体</span><span>繁體</span><span>日本語</span><span>고정</span><span></span>
+            </div>
+            <sc-for list="{{ glossRows }}" as="g" hint-placeholder-count="8">
+              <div style="display:grid;grid-template-columns:150px 150px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 54px 44px;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);align-items:center;font-size:13px" style-hover="background:var(--raise)">
+                <span style="font-weight:500">{{ g.ko }}</span>
+                <span style="font-size:11.5px;color:var(--muted)">{{ g.cat }}</span>
+                <span>{{ g.en }}</span>
+                <span lang="zh-CN" style="font-family:var(--sc)">{{ g.cn }}</span>
+                <span lang="zh-TW" style="font-family:var(--tc)">{{ g.tw }}</span>
+                <span lang="ja" style="font-family:var(--ja)">{{ g.ja }}</span>
+                <span><i class="ph {{ g.pinIcon }}" style="font-size:14px;color:{{ g.pinColor }}"></i></span>
+                <button style="width:26px;height:26px;display:grid;place-items:center;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--dim);cursor:pointer" style-hover="border-color:rgba(226,101,95,.4);color:var(--bad)"><i class="ph ph-trash" style="font-size:13px"></i></button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- 6 · 언어 설정 -->
+      <sc-if value="{{ isLangSet }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;max-width:960px">
+          <div style="display:flex;gap:4px;background:var(--surface2);border:1px solid var(--line);border-radius:7px;padding:4px;width:fit-content">
+            <sc-for list="{{ setTabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" style="padding:5px 14px;border-radius:5px;font-size:12.5px;font-weight:500;cursor:pointer;border:0;background:{{ t.bg }};color:{{ t.fg }}">{{ t.name }}</button>
+            </sc-for>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;align-items:baseline;gap:9px">
+              <span style="font-size:13.5px;font-weight:600">문체·표기 규칙</span>
+              <span style="font-size:11.5px;color:var(--dim)">{{ setLangName }} 프롬프트에 그대로 들어갑니다</span>
+            </div>
+            <textarea value="{{ styleRules }}" onChange="{{ setStyleRules }}" spellcheck="false" style="min-height:140px;resize:vertical;background:var(--surface2);border:1px solid var(--line2);border-radius:6px;color:var(--txt);font-size:14px;line-height:1.7;padding:12px"></textarea>
+          </div>
+
+          <div style="display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:16px;align-items:start">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between">
+                <span style="font-size:13.5px;font-weight:600">절대 나오면 안 되는 표현</span>
+                <span style="font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums">{{ bannedCount }}개</span>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ banned }}" as="b" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--line)">
+                    <span lang="{{ setLangTag }}" style="flex:1;font-size:13.5px;font-family:{{ setLangFont }}">{{ b }}</span>
+                    <button style="width:22px;height:22px;display:grid;place-items:center;border-radius:4px;border:0;background:transparent;color:var(--dim);cursor:pointer" style-hover="color:var(--bad)"><i class="ph ph-x" style="font-size:12px"></i></button>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:6px;padding-top:4px">
+                <input placeholder="표현 추가" style="flex:1;background:var(--surface2);border:1px solid var(--line2);border-radius:6px;color:var(--txt);font-size:12.5px;padding:6px 9px;outline:none">
+                <button style="padding:6px 11px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--txt);font-size:12.5px;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">추가</button>
+              </div>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:11px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between">
+                <span style="font-size:13.5px;font-weight:600">대조 예문</span>
+                <span style="font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums">{{ exampleCount }}개</span>
+              </div>
+              <sc-for list="{{ examples }}" as="e" hint-placeholder-count="2">
+                <div style="border:1px solid var(--line);border-radius:7px;padding:12px;display:grid;grid-template-columns:118px minmax(0,1fr);gap:7px 12px;align-items:baseline">
+                  <span style="font-size:11.5px;color:var(--dim)">원문</span>
+                  <span style="font-size:13.5px">{{ e.src }}</span>
+                  <span style="font-size:11.5px;color:var(--bad)">이렇게 나오면 안 됨</span>
+                  <span lang="{{ setLangTag }}" style="font-size:13.5px;color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(226,101,95,.6);font-family:{{ setLangFont }}">{{ e.bad }}</span>
+                  <span style="font-size:11.5px;color:var(--ok)">이렇게 나와야 함</span>
+                  <span lang="{{ setLangTag }}" style="font-size:13.5px;font-family:{{ setLangFont }}">{{ e.good }}</span>
+                  <span style="font-size:11.5px;color:var(--dim)">이유</span>
+                  <span style="font-size:12.5px;color:var(--muted)">{{ e.why }}</span>
+                </div>
+              </sc-for>
+              <button style="padding:8px;border-radius:6px;border:1px dashed var(--line2);background:transparent;color:var(--muted);font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">예문 추가</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;lime&quot;,&quot;blurple&quot;],&quot;default&quot;:&quot;lime&quot;,&quot;tsType&quot;:&quot;'lime'|'blurple'&quot;,&quot;section&quot;:&quot;테마&quot;}}">
+const THEMES = {
+  lime: { accent: '#c4f24d', ink: '#15170f', soft: 'rgba(196,242,77,.12)', sel: 'rgba(196,242,77,.28)', label: '형광 연두' },
+  blurple: { accent: '#9184d9', ink: '#15131f', soft: 'rgba(145,132,217,.14)', sel: 'rgba(145,132,217,.30)', label: 'Nocturne 블러플' }
+};
+const FONTS = { ja: 'var(--ja)', 'zh-CN': 'var(--sc)', 'zh-TW': 'var(--tc)', en: 'var(--fnt)', ko: 'var(--fnt)' };
+const LANGS = [
+  { id: 'ja', name: '일본어', code: 'JA', tag: 'ja', pending: 12, fixed: 3, ok: 47 },
+  { id: 'cn', name: '중국어', code: 'ZH-CN', tag: 'zh-CN', pending: 8, fixed: 1, ok: 52 },
+  { id: 'tw', name: '대만어', code: 'ZH-TW', tag: 'zh-TW', pending: 8, fixed: 0, ok: 51 },
+  { id: 'en', name: '영어', code: 'EN', tag: 'en', pending: 5, fixed: 2, ok: 63 }
+];
+const NAV = [
+  { id: 'dash', label: '대시보드', icon: 'ph-gauge', title: '대시보드', sub: '오늘 사람 손이 필요한 것' },
+  { id: 'trans', label: '번역', icon: 'ph-translate', title: '번역', sub: '한국어 원고 → 4개 언어' },
+  { id: 'excel', label: '엑셀 일괄', icon: 'ph-table', title: '엑셀 일괄', sub: '파일 단위 번역과 다운로드' },
+  { id: 'review', label: '검수', icon: 'ph-seal-check', title: '검수', sub: '원어민 검수자가 고치는 화면' },
+  { id: 'gloss', label: '용어집', icon: 'ph-book-open', title: '용어집', sub: '226건 · 13개 분류' },
+  { id: 'langset', label: '언어 설정', icon: 'ph-sliders-horizontal', title: '언어 설정', sub: '문체 규칙 · 금지표현 · 대조 예문' }
+];
+const BLOCKED = [
+  { lang: '일본어', tag: 'ja', src: '톤즈의원 이동선 원장 상담', mt: 'Moving line ledger consultation', code: 'EN_NAME_MOVING_LINE', why: '사람 이름이 뜻으로 번역됨' },
+  { lang: '중국어', tag: 'zh-CN', src: '물톡스 3회 패키지', mt: '水毒素 3次套餐', code: 'CN_WATER_TOXIN', why: "직역이 '물 독소'가 됨" },
+  { lang: '일본어', tag: 'ja', src: '톤즈의원 원장이 직접 진행하는 이마 주름 시술입니다.', mt: 'トンズ医院院長が直接担当する、おでこのしわ施術です。', code: 'JA_ADMIN_TANTOU', why: '担当는 사무적 표현 → 施術' },
+  { lang: '대만어', tag: 'zh-TW', src: '리프팅 1회 체험가', mt: '拉提 1次 體驗價格', code: 'TW_PRICE_SPACING', why: '가격 표기에 공백이 끼어 숫자가 갈라짐' },
+  { lang: '영어', tag: 'en', src: '톤즈의원 강남점', mt: "Tone's Clinic Gangnam Branch Store", code: 'EN_BRANCH_STORE', why: '지점을 매장(Store)으로 번역' }
+];
+const RESULTS = [
+  { id: 'en', name: '영어', tag: 'en', text: "Tone's CLINIC Dr. Lee Dong-seon's Lifting Treatment, ₩150,000", conf: 0.95, state: 'pass' },
+  { id: 'ja', name: '일본어', tag: 'ja', text: 'トンズ医院 イ・ドンソン院長のリフティング施術、150,000ウォン', conf: 0.92, state: 'pass' },
+  { id: 'cn', name: '중국어', tag: 'zh-CN', text: "Tone's CLINIC 李东善院长的面部提升项目，150,000韩元", conf: 0.89, state: 'warn' },
+  { id: 'tw', name: '대만어', tag: 'zh-TW', text: "Tone's CLINIC 李東善院長的拉提療程，150,000韓元", conf: 0.91, state: 'pass' }
+];
+const CARDS = {
+  ja: [
+    { id: 'JA-2041', ctx: '시술설명', flag: 'block', status: '검수 대기', conf: 0.41, src: '톤즈의원 원장이 직접 진행하는 이마 주름 시술입니다.', mt: 'トンズ医院院長が直接担当する、おでこのしわ施術です。', code: 'JA_ADMIN_TANTOU', note: '担当는 사무적 표현 → 施術', edit: 'トンズ医院 院長が自ら施術いたします。額のしわ治療。' },
+    { id: 'JA-2038', ctx: '시술명', flag: 'warn', status: '수정됨', conf: 0.73, src: '물톡스 3회 패키지', mt: 'ウォートックス 3回パッケージ', code: 'JA_BRAND_KATAKANA', note: '제품명 표기가 용어집과 다릅니다 (物トックス)', edit: '水光トックス 3回パッケージ' },
+    { id: 'JA-2035', ctx: '일반', flag: 'ok', status: '검수 대기', conf: 0.94, src: '상담 예약은 카카오톡으로도 가능합니다.', mt: 'ご相談のご予約はカカオトークからも承ります。', code: '', note: '', edit: 'ご相談のご予約はカカオトークからも承ります。' }
+  ],
+  cn: [
+    { id: 'CN-1180', ctx: '시술명', flag: 'block', status: '검수 대기', conf: 0.38, src: '물톡스 3회 패키지', mt: '水毒素 3次套餐', code: 'CN_WATER_TOXIN', note: "직역이 '물 독소'가 됨 → 水光针", edit: '水光针 3次套餐' },
+    { id: 'CN-1176', ctx: '시술카테고리', flag: 'warn', status: '검수 대기', conf: 0.67, src: '리프팅 · 윤곽', mt: '提升 · 轮廓线', code: 'CN_CATEGORY_DOT', note: '카테고리 구분자 표기 확인 필요', edit: '面部提升 · 轮廓' }
+  ],
+  tw: [
+    { id: 'TW-0942', ctx: '시술명', flag: 'block', status: '검수 대기', conf: 0.44, src: '리프팅 1회 체험가', mt: '拉提 1次 體驗價格', code: 'TW_PRICE_SPACING', note: '가격 표기에 공백이 끼어 숫자가 갈라짐', edit: '拉提單次體驗價' },
+    { id: 'TW-0938', ctx: '지점·지명', flag: 'ok', status: '승인', conf: 0.96, src: '톤즈의원 강남점', mt: "Tone's CLINIC 江南店", code: '', note: '', edit: "Tone's CLINIC 江南院區" }
+  ],
+  en: [
+    { id: 'EN-3307', ctx: '인명', flag: 'block', status: '검수 대기', conf: 0.35, src: '톤즈의원 이동선 원장 상담', mt: 'Moving line ledger consultation', code: 'EN_NAME_MOVING_LINE', note: '사람 이름이 뜻으로 번역됨 → Dr. Lee Dong-seon', edit: "Consultation with Dr. Lee Dong-seon, Tone's CLINIC" },
+    { id: 'EN-3301', ctx: '약관', flag: 'warn', status: '수정됨', conf: 0.71, src: '시술 전 상담은 필수입니다.', mt: 'Consultation before treatment is a must.', code: 'EN_TONE_CASUAL', note: '약관 문맥에 구어체(a must) 사용', edit: 'A consultation is required prior to treatment.' }
+  ]
+};
+const CATS = [
+  ['equipment', '장비구성', 60], ['procedure', '시술명', 30], ['device', '의료기기', 24],
+  ['product', '제품명', 21], ['location', '지점·지명', 21], ['category', '시술카테고리', 15],
+  ['anatomy', '신체부위', 14], ['person', '인명', 13], ['menu', '사이트메뉴', 7],
+  ['condition', '증상', 7], ['general', '일반용어', 6], ['tag', 'UI태그', 4], ['brand', '브랜드', 4]
+];
+const GLOSS = [
+  { ko: '톤즈의원', cat: 'brand (브랜드)', en: "Tone's CLINIC", cn: "Tone's CLINIC", tw: "Tone's CLINIC", ja: 'トンズ医院', pin: true },
+  { ko: '이동선', cat: 'person (인명)', en: 'Dr. Lee Dong-seon', cn: '李东善', tw: '李東善', ja: 'イ・ドンソン', pin: true },
+  { ko: '리프팅', cat: 'procedure (시술명)', en: 'Lifting', cn: '面部提升', tw: '拉提', ja: 'リフティング', pin: true },
+  { ko: '물톡스', cat: 'product (제품명)', en: 'Skin Booster Tox', cn: '水光针', tw: '水光針', ja: '水光トックス', pin: true },
+  { ko: '이마 주름', cat: 'anatomy (신체부위)', en: 'Forehead wrinkles', cn: '额头皱纹', tw: '額頭皺紋', ja: '額のしわ', pin: false },
+  { ko: '강남점', cat: 'location (지점·지명)', en: 'Gangnam', cn: '江南院区', tw: '江南院區', ja: '江南院', pin: true },
+  { ko: '울쎄라', cat: 'device (의료기기)', en: 'Ulthera', cn: '超声刀', tw: '超音波拉皮', ja: 'ウルセラ', pin: true },
+  { ko: '상담 예약', cat: 'menu (사이트메뉴)', en: 'Book a consultation', cn: '预约咨询', tw: '預約諮詢', ja: 'ご相談予約', pin: false },
+  { ko: '색소 침착', cat: 'condition (증상)', en: 'Hyperpigmentation', cn: '色素沉着', tw: '色素沉澱', ja: '色素沈着', pin: false },
+  { ko: '체험가', cat: 'general (일반용어)', en: 'Trial price', cn: '体验价', tw: '體驗價', ja: '体験価格', pin: false }
+];
+const SETTINGS = {
+  en: {
+    rules: "Sentence case for headings. Keep the brand as Tone's CLINIC — never translate it. Romanize doctor names as given in the glossary (Dr. Lee Dong-seon). Prices as ₩150,000 with the won symbol, no spaces. Procedure names keep their glossary form; do not invent marketing adjectives.",
+    banned: ['a must', 'Branch Store', 'Moving line', 'Water toxin', 'surgery (for non-surgical treatments)'], bannedN: 10,
+    ex: [
+      { src: '톤즈의원 강남점', bad: "Tone's Clinic Gangnam Branch Store", good: "Tone's CLINIC Gangnam", why: '지점은 Store가 아니라 지역명만 붙입니다' },
+      { src: '시술 전 상담은 필수입니다.', bad: 'Consultation before treatment is a must.', good: 'A consultation is required prior to treatment.', why: '약관·안내문은 구어체를 쓰지 않습니다' },
+      { src: '이동선 원장', bad: 'Moving line director', good: 'Dr. Lee Dong-seon', why: '사람 이름은 뜻으로 번역하지 않습니다' }
+    ], exN: 3
+  },
+  cn: {
+    rules: '简体中文，医疗机构正式语气。品牌名保留 Tone\'s CLINIC 原文。价格写作 150,000韩元，数字与单位之间不加空格。项目名称使用术语表中的固定译法，不自行改写。避免"整容"等带负面联想的词。',
+    banned: ['水毒素', '整容', '手术（非手术项目）', '便宜', '保证效果'], bannedN: 13,
+    ex: [
+      { src: '물톡스 3회 패키지', bad: '水毒素 3次套餐', good: '水光针 3次套餐', why: '직역하면 물 독소가 되어 뜻이 완전히 달라집니다' },
+      { src: '리프팅 시술', bad: '拉皮手术', good: '面部提升项目', why: '비수술 시술을 수술로 표기하면 안 됩니다' }
+    ], exN: 2
+  },
+  tw: {
+    rules: '繁體中文（台灣用語）。品牌名保留 Tone\'s CLINIC。價格寫作 150,000韓元，數字不斷行、不加空格。醫美項目使用台灣慣用語（拉提、電波、音波），不使用大陸用語。分院寫作「院區」而非「店」。',
+    banned: ['超声刀（簡體用語）', '水毒素', '店', '整容', '包治'], bannedN: 11,
+    ex: [
+      { src: '리프팅 1회 체험가', bad: '拉提 1次 體驗價格', good: '拉提單次體驗價', why: '가격 표기에 공백을 넣으면 숫자가 갈라집니다' },
+      { src: '톤즈의원 강남점', bad: "Tone's CLINIC 江南店", good: "Tone's CLINIC 江南院區", why: '台灣에서는 분원을 院區로 표기합니다' }
+    ], exN: 2
+  },
+  ja: {
+    rules: '丁寧体（です・ます）。院長・医師が主体の文は「いたします」を使い、事務的な「担当する」は避ける。ブランド名は トンズ医院 で固定。価格は 150,000ウォン と表記し、記号は使わない。施術名は用語集の表記に従う。',
+    banned: ['担当する', '物トックス', '整形', '手術（非手術施術）', '激安'], bannedN: 9,
+    ex: [
+      { src: '톤즈의원 원장이 직접 진행하는 이마 주름 시술입니다.', bad: 'トンズ医院院長が直接担当する、おでこのしわ施術です。', good: 'トンズ医院 院長が自ら施術いたします。額のしわ治療。', why: '担当는 사무적 표현이라 시술 주체 표현에 맞지 않습니다' },
+      { src: '물톡스', bad: '物トックス', good: '水光トックス', why: '한자를 그대로 읽어 제품명이 깨졌습니다' }
+    ], exN: 2
+  }
+};
+const FLAGS = {
+  block: { label: '차단', color: 'var(--bad)', bg: 'rgba(226,101,95,.14)' },
+  warn: { label: '경고', color: 'var(--warn)', bg: 'rgba(226,162,71,.14)' },
+  ok: { label: '정상', color: 'var(--ok)', bg: 'rgba(87,201,139,.14)' }
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const cards = {};
+    Object.keys(CARDS).forEach(k => { cards[k] = CARDS[k].map(c => ({ ...c })); });
+    this.state = {
+      screen: 'dash', theme: props.accentTheme === 'blurple' ? 'blurple' : 'lime', empty: false,
+      targets: { en: true, cn: true, tw: true, ja: true }, ctx: '시술명', dir: 'ko2x',
+      src: '톤즈의원 이동선 원장의 리프팅 시술, 150,000원',
+      excel: 'running', revLang: 'ja', revStatus: '상태 전체', onlyFlagged: false, revQuery: '',
+      glossQuery: '', glossCat: null, setLang: 'ja', cards, settings: JSON.parse(JSON.stringify(SETTINGS)),
+      pending: LANGS.reduce((a, l) => { a[l.id] = l.pending; return a; }, {})
+    };
+  }
+  componentDidMount() { this.applyTheme(); }
+  componentDidUpdate(p, s) { if (s.theme !== this.state.theme) this.applyTheme(); }
+  applyTheme() {
+    const t = THEMES[this.state.theme], r = document.documentElement.style;
+    r.setProperty('--accent', t.accent); r.setProperty('--accent-ink', t.ink); r.setProperty('--accent-soft', t.soft);
+  }
+  set(k, v) { this.setState({ [k]: v }); }
+  editCard(lang, id, val) {
+    this.setState(s => ({ cards: { ...s.cards, [lang]: s.cards[lang].map(c => c.id === id ? { ...c, edit: val } : c) } }));
+  }
+  markCard(lang, id, status, flag) {
+    this.setState(s => {
+      const prev = s.cards[lang].find(c => c.id === id);
+      let d = 0;
+      if (prev && prev.status === '검수 대기' && status !== '검수 대기') d = -1;
+      if (prev && prev.status !== '검수 대기' && status === '검수 대기') d = 1;
+      return {
+        cards: { ...s.cards, [lang]: s.cards[lang].map(c => c.id === id ? { ...c, status, flag: flag || c.flag } : c) },
+        pending: { ...s.pending, [lang]: Math.max(0, s.pending[lang] + d) }
+      };
+    });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const nav = NAV.map(n => {
+      const active = st.screen === n.id;
+      const badge = n.id === 'review' ? String(LANGS.reduce((a, l) => a + st.pending[l.id], 0)) : '';
+      return {
+        ...n, go: () => this.set('screen', n.id),
+        bg: active ? 'var(--accent-soft)' : 'transparent',
+        fg: active ? 'var(--txt)' : 'var(--muted)',
+        ic: active ? 'var(--accent)' : 'var(--dim)',
+        badge, badgeBg: badge ? 'var(--raise)' : 'transparent', badgeFg: badge ? 'var(--muted)' : 'transparent'
+      };
+    });
+    const cur = NAV.find(n => n.id === st.screen) || NAV[0];
+
+    const langCards = LANGS.map(l => {
+      const p = st.pending[l.id];
+      return { ...l, pending: p, pendColor: p > 9 ? 'var(--accent)' : 'var(--txt)' };
+    });
+    const blocked = BLOCKED.slice(0, 5).map(b => ({ ...b, font: FONTS[b.tag], go: () => this.setState({ screen: 'review', revLang: b.tag === 'ja' ? 'ja' : b.tag === 'zh-CN' ? 'cn' : b.tag === 'zh-TW' ? 'tw' : 'en' }) }));
+
+    const targets = LANGS.map(l => {
+      const a = st.targets[l.id];
+      return { name: l.name, toggle: () => this.setState(s => ({ targets: { ...s.targets, [l.id]: !s.targets[l.id] } })),
+        bg: a ? 'var(--accent-soft)' : 'transparent', border: a ? 'var(--accent)' : 'var(--line2)', fg: a ? 'var(--accent)' : 'var(--muted)' };
+    });
+    const results = RESULTS.filter(r => st.targets[r.id]).map(r => {
+      const f = r.state === 'warn' ? FLAGS.warn : FLAGS.ok;
+      return { ...r, font: FONTS[r.tag], conf: r.conf.toFixed(2), pct: Math.round(r.conf * 100) + '%',
+        barColor: r.conf >= 0.9 ? 'var(--ok)' : r.conf >= 0.8 ? 'var(--warn)' : 'var(--bad)',
+        badge: r.state === 'warn' ? '경고' : '통과', badgeBg: f.bg, badgeFg: f.color,
+        copy: () => navigator.clipboard && navigator.clipboard.writeText(r.text) };
+    });
+
+    const excelStates = [['idle', '대기'], ['running', '진행 중'], ['warn', '미등록 용어 경고'], ['done', '완료']].map(([k, label]) => ({
+      label, pick: () => this.set('excel', k),
+      bg: st.excel === k ? 'var(--accent-soft)' : 'transparent', fg: st.excel === k ? 'var(--accent)' : 'var(--muted)'
+    }));
+    const unknownTerms = [
+      { term: '리쥬란 힐러', hint: 'product 후보' }, { term: '슈링크 유니버스', hint: 'device 후보' },
+      { term: '인모드 FX', hint: 'device 후보' }, { term: '티타늄 리프팅', hint: 'procedure 후보' },
+      { term: '수성점', hint: 'location 후보' }, { term: '브이올렛', hint: 'product 후보' },
+      { term: '더블로 골드', hint: 'device 후보' }
+    ];
+
+    const reviewTabs = LANGS.map(l => ({
+      name: l.name, count: st.empty && l.id === st.revLang ? 0 : st.pending[l.id],
+      pick: () => this.set('revLang', l.id),
+      bg: st.revLang === l.id ? 'var(--accent-soft)' : 'transparent', fg: st.revLang === l.id ? 'var(--accent)' : 'var(--muted)',
+      badgeBg: st.revLang === l.id ? 'rgba(0,0,0,.35)' : 'var(--raise)', badgeFg: st.revLang === l.id ? 'var(--accent)' : 'var(--dim)'
+    }));
+    const lang = LANGS.find(l => l.id === st.revLang) || LANGS[0];
+    let list = st.empty ? [] : st.cards[st.revLang];
+    if (st.onlyFlagged) list = list.filter(c => c.flag !== 'ok');
+    if (st.revStatus !== '상태 전체') list = list.filter(c => c.status === st.revStatus);
+    if (st.revQuery.trim()) { const q = st.revQuery.trim(); list = list.filter(c => (c.src + c.mt + c.edit).includes(q)); }
+    const reviewCards = list.map(c => {
+      const f = FLAGS[c.flag];
+      return { ...c, strip: f.color, flag: f.label, flagBg: f.bg, flagFg: f.color, font: FONTS[lang.tag], tag: lang.tag,
+        conf: c.conf.toFixed(2), hasNote: !!c.note,
+        statusFg: c.status === '승인' ? 'var(--ok)' : c.status === '수정됨' ? 'var(--accent)' : 'var(--muted)',
+        editBorder: c.flag === 'block' ? 'rgba(226,101,95,.45)' : 'var(--line2)',
+        onEdit: e => this.editCard(st.revLang, c.id, e.target.value),
+        save: () => this.markCard(st.revLang, c.id, '수정됨'),
+        approve: () => this.markCard(st.revLang, c.id, '승인', 'ok'),
+        reset: () => this.markCard(st.revLang, c.id, '검수 대기'),
+        toExample: () => this.markCard(st.revLang, c.id, '수정됨') };
+    });
+
+    const categories = CATS.map(([code, ko, n]) => {
+      const a = st.glossCat === code;
+      return { code, ko, n, pick: () => this.set('glossCat', a ? null : code),
+        bg: a ? 'var(--accent-soft)' : 'var(--surface)', border: a ? 'var(--accent)' : 'var(--line)',
+        fg: a ? 'var(--accent)' : 'var(--txt)', numFg: a ? 'var(--accent)' : 'var(--dim)' };
+    });
+    let rows = GLOSS;
+    if (st.glossCat) rows = rows.filter(g => g.cat.startsWith(st.glossCat));
+    if (st.glossQuery.trim()) { const q = st.glossQuery.trim().toLowerCase(); rows = rows.filter(g => (g.ko + g.en + g.cn + g.tw + g.ja).toLowerCase().includes(q)); }
+    const glossRows = rows.map(g => ({ ...g, pinIcon: g.pin ? 'ph-push-pin' : 'ph-push-pin-slash', pinColor: g.pin ? 'var(--accent)' : 'var(--dim)' }));
+
+    const setTabs = LANGS.map(l => ({ name: l.name, pick: () => this.set('setLang', l.id),
+      bg: st.setLang === l.id ? 'var(--accent-soft)' : 'transparent', fg: st.setLang === l.id ? 'var(--accent)' : 'var(--muted)' }));
+    const sl = LANGS.find(l => l.id === st.setLang) || LANGS[0];
+    const cfg = st.settings[st.setLang];
+
+    return {
+      nav, themes: Object.keys(THEMES).map(k => ({ label: THEMES[k].label, pick: () => this.set('theme', k),
+        swatch: THEMES[k].accent, border: st.theme === k ? 'var(--txt)' : 'transparent' })),
+      title: cur.title, subtitle: cur.sub,
+      isDash: st.screen === 'dash', isTrans: st.screen === 'trans', isExcel: st.screen === 'excel',
+      isReview: st.screen === 'review', isGloss: st.screen === 'gloss', isLangSet: st.screen === 'langset',
+      empty: st.empty, notEmpty: !st.empty,
+      toggleEmpty: () => this.set('empty', !st.empty),
+      emptyBg: st.empty ? 'var(--accent-soft)' : 'transparent', emptyBorder: st.empty ? 'var(--accent)' : 'var(--line2)',
+      emptyFg: st.empty ? 'var(--accent)' : 'var(--muted)',
+      langCards, blocked, blockedCount: BLOCKED.length,
+      stats: [
+        { label: '용어집', big: '226', bigUnit: '건', sub: '13개 분류 · 고정 용어 41건' },
+        { label: '언어 설정', big: '46', bigUnit: '개 금지표현', sub: '대조 예문 10개 · 4개 언어' },
+        { label: '검증 규칙', big: '60', bigUnit: '개', sub: '4개 언어 · 차단 22 / 경고 38' }
+      ],
+      targets, ctx: st.ctx, ctxOptions: ['시술명', '시술설명', '카테고리', '일반', '약관'],
+      setCtx: e => this.set('ctx', e.target.value),
+      flipDir: () => this.set('dir', st.dir === 'ko2x' ? 'x2ko' : 'ko2x'),
+      dirLabel: st.dir === 'ko2x' ? '한국어 → 외국어' : '외국어 → 한국어',
+      srcText: st.src, setSrc: e => this.set('src', e.target.value),
+      pinned: ['톤즈의원', '이동선', '리프팅'], runTranslate: () => this.set('empty', false), results,
+      excelStates, excelIdle: st.excel === 'idle', excelRunning: st.excel === 'running',
+      excelWarn: st.excel === 'warn', excelDone: st.excel === 'done', unknownTerms,
+      downloads: ['English .xlsx', '简体 .xlsx', '繁體 .xlsx', '日本語 .xlsx'],
+      reviewTabs, reviewCards, reviewEmpty: reviewCards.length === 0, reviewHas: reviewCards.length > 0,
+      revStatus: st.revStatus, revStatusOptions: ['상태 전체', '검수 대기', '수정됨', '승인'],
+      setRevStatus: e => this.set('revStatus', e.target.value),
+      toggleOnlyFlagged: () => this.set('onlyFlagged', !st.onlyFlagged),
+      flaggedBg: st.onlyFlagged ? 'var(--accent-soft)' : 'transparent',
+      flaggedBorder: st.onlyFlagged ? 'var(--accent)' : 'var(--line2)',
+      flaggedFg: st.onlyFlagged ? 'var(--accent)' : 'var(--muted)',
+      revQuery: st.revQuery, setRevQuery: e => this.set('revQuery', e.target.value),
+      glossQuery: st.glossQuery, setGlossQuery: e => this.set('glossQuery', e.target.value),
+      categories, glossRows,
+      setTabs, setLangName: sl.name, setLangTag: sl.tag, setLangFont: FONTS[sl.tag],
+      styleRules: cfg.rules, setStyleRules: e => this.setState(s => ({ settings: { ...s.settings, [st.setLang]: { ...s.settings[st.setLang], rules: e.target.value } } })),
+      banned: cfg.banned, bannedCount: cfg.bannedN, examples: cfg.ex, exampleCount: cfg.exN
+    };
+  }
+}
+</script>
+</body>
+</html>
